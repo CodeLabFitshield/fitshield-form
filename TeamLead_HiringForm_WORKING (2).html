@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitshield — Team Lead Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333333;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            border-bottom: 2px solid #00c600;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            color: #333333;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: #666666;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #dddddd;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00c600;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-title {
+            color: #333333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #666666;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: #333333;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 2px solid #dddddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: #ffffff;
+            color: #333333;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #00c600;
+            box-shadow: 0 0 0 3px rgba(0, 198, 0, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .choice {
+            padding: 0.8rem;
+            background: #f9f9f9;
+            border: 2px solid #dddddd;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 0.6rem;
+            transition: all 0.2s;
+        }
+
+        .choice:hover {
+            border-color: #00c600;
+        }
+
+        .choice input {
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background: #f9f9f9;
+            border: 2px solid #dddddd;
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            gap: 0.8rem;
+        }
+
+        .ranking-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #00c600;
+            color: #ffffff;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .ranking-text {
+            flex: 1;
+            color: #333333;
+            font-size: 0.95rem;
+        }
+
+        .ranking-buttons {
+            display: flex;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .rank-btn {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 2px solid #00c600;
+            background: #ffffff;
+            color: #00c600;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rank-btn:hover {
+            background: #00c600;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .rank-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dddddd;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.6rem;
+            border: 2px solid #00c600;
+            border-radius: 8px;
+            background: transparent;
+            color: #00c600;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #00c600;
+            color: #ffffff;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message h2 {
+            color: #333333;
+            margin-bottom: 1rem;
+        }
+
+        .success-message p {
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        .important-notice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .important-notice h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .important-notice p {
+            color: #856404;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .file-upload {
+            padding: 1.5rem;
+            border: 2px dashed #dddddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9f9f9;
+        }
+
+        .file-upload:hover {
+            border-color: #00c600;
+            background: #f0f9f0;
+        }
+
+        #resumeFileName {
+            color: #00c600;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .page-indicator {
+            text-align: right;
+            color: #999999;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ FITSHIELD</h1>
+            <p>Team Lead Assessment</p>
+            <p style="color: #00c600; font-weight: 500;">Full Stack Architecture Role</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="content">
+            <!-- Page 1: Important Notice -->
+            <div class="page active" data-page="1">
+                <h2 class="page-title">Important Notice</h2>
+                <div class="important-notice">
+                    <h3>⚠️ AI-Generated Content Detection</h3>
+                    <p>This assessment is designed to evaluate your genuine thinking and experience. We screen for AI-generated responses and will not proceed with applications that show signs of artificial content generation. Please answer honestly with your own thoughts and experience.</p>
+                </div>
+                <div class="form-group">
+                    <div class="choice">
+                        <input type="checkbox" id="acceptance" name="acceptance" value="accepted" required>
+                        <label for="acceptance" style="display: inline; margin: 0;">I understand and accept</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Basic Info -->
+            <div class="page" data-page="2">
+                <h2 class="page-title">Basic Information</h2>
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone (+91...) *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="portfolio">GitHub/Portfolio URL *</label>
+                    <input type="text" id="portfolio" name="portfolio" placeholder="https://github.com/yourname" required>
+                </div>
+            </div>
+
+            <!-- Page 3: Resume Upload -->
+            <div class="page" data-page="3">
+                <h2 class="page-title">Resume Upload</h2>
+                <div class="form-group">
+                    <label for="resumeFile">Resume/CV (PDF, DOC, DOCX, max 5MB) *</label>
+                    <div class="file-upload" onclick="document.getElementById('resumeFile').click()">
+                        📄 Click to upload or drag & drop
+                    </div>
+                    <input type="file" id="resumeFile" name="resume" accept=".pdf,.doc,.docx" style="display: none;" onchange="handleResumeUpload(event)">
+                    <div id="resumeFileName" style="display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn URL (optional)</label>
+                    <input type="text" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                </div>
+            </div>
+
+            <!-- Page 4: Backend Expertise -->
+            <div class="page" data-page="4">
+                <h2 class="page-title">Backend Expertise</h2>
+                <div class="form-group">
+                    <label for="yearsProduction">Years of production software experience *</label>
+                    <input type="number" id="yearsProduction" name="yearsProduction" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="yearsLeadership">Years in leadership roles *</label>
+                    <input type="number" id="yearsLeadership" name="yearsLeadership" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="pythonRating">Python/Django expertise (1-10) *</label>
+                    <input type="number" id="pythonRating" name="pythonRating" min="1" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="reactRating">React expertise (1-10) *</label>
+                    <input type="number" id="reactRating" name="reactRating" min="1" max="10" required>
+                </div>
+            </div>
+
+            <!-- Page 5: Architecture & Scale -->
+            <div class="page" data-page="5">
+                <h2 class="page-title">Architecture & Scale</h2>
+                <div class="form-group">
+                    <label>Database or API optimization experience *</label>
+                    <div class="choice">
+                        <input type="radio" name="scaleExperience" value="led" required>
+                        <label style="display: inline; margin: 0;">Yes - led from scratch</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="scaleExperience" value="contributed">
+                        <label style="display: inline; margin: 0;">Yes - key contributor</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="scaleExperience" value="some">
+                        <label style="display: inline; margin: 0;">Some exposure</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tech stack strengths *</label>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="databases">
+                        <label style="display: inline; margin: 0;">Database design & optimization</label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="rest">
+                        <label style="display: inline; margin: 0;">REST / GraphQL API design</label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="devops">
+                        <label style="display: inline; margin: 0;">DevOps / Docker / Infrastructure</label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="ml">
+                        <label style="display: inline; margin: 0;">ML / Data pipelines</label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="testing">
+                        <label style="display: inline; margin: 0;">Testing & code quality</label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" name="techStack" value="dsa">
+                        <label style="display: inline; margin: 0;">Data structures & algorithms</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 6: Leadership Philosophy -->
+            <div class="page" data-page="6">
+                <h2 class="page-title">Leadership Philosophy</h2>
+                <div class="form-group">
+                    <label>Your leadership style *</label>
+                    <div class="choice">
+                        <input type="radio" name="leadershipStyle" value="building" required>
+                        <label style="display: inline; margin: 0;">Building systems from scratch</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="leadershipStyle" value="ownership">
+                        <label style="display: inline; margin: 0;">Taking ownership of outcomes</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="leadershipStyle" value="independent">
+                        <label style="display: inline; margin: 0;">Independent execution</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="leadershipStyle" value="defined">
+                        <label style="display: inline; margin: 0;">Clear instructions & defined roles</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mentoringApproach">How do you approach mentoring? *</label>
+                    <textarea id="mentoringApproach" name="mentoringApproach" placeholder="Your approach to growing engineers..." required></textarea>
+                </div>
+            </div>
+
+            <!-- Page 7: Systems Built -->
+            <div class="page" data-page="7">
+                <h2 class="page-title">Systems You've Built</h2>
+                <div class="form-group">
+                    <label for="systemDescription">Describe a system you built *</label>
+                    <textarea id="systemDescription" name="systemDescription" placeholder="What problem did it solve? What was the scale?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="systemOptimization">How did you optimize it? *</label>
+                    <textarea id="systemOptimization" name="systemOptimization" placeholder="Performance improvements, cost reductions, etc." required></textarea>
+                </div>
+            </div>
+
+            <!-- Page 8: Migration Experience -->
+            <div class="page" data-page="8">
+                <h2 class="page-title">Migration Experience</h2>
+                <div class="form-group">
+                    <label>Migration/refactoring experience *</label>
+                    <div class="choice">
+                        <input type="radio" name="migrationExp" value="led" required>
+                        <label style="display: inline; margin: 0;">Led major migration</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="migrationExp" value="key">
+                        <label style="display: inline; margin: 0;">Key contributor</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="migrationExp" value="some">
+                        <label style="display: inline; margin: 0;">Some migrations</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="migrationStrategy">Flutter → React strategy (if relevant) *</label>
+                    <textarea id="migrationStrategy" name="migrationStrategy" placeholder="How would you approach this?" required></textarea>
+                </div>
+            </div>
+
+            <!-- Page 9: Team Building -->
+            <div class="page" data-page="9">
+                <h2 class="page-title">Team Building & Culture</h2>
+                <div class="form-group">
+                    <label for="hiringApproach">Your hiring approach *</label>
+                    <textarea id="hiringApproach" name="hiringApproach" placeholder="How do you identify & hire talent?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="conflictHandling">How do you handle conflict? *</label>
+                    <textarea id="conflictHandling" name="conflictHandling" placeholder="Example approach..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="technicalStandards">Technical standards you value *</label>
+                    <textarea id="technicalStandards" name="technicalStandards" placeholder="Code reviews, testing, documentation..." required></textarea>
+                </div>
+            </div>
+
+            <!-- Page 10: Startup Readiness -->
+            <div class="page" data-page="10">
+                <h2 class="page-title">Startup Fit</h2>
+                <div class="form-group">
+                    <label>What excites you about this role? (rank 1–5) *</label>
+                    <p style="font-size: 0.9rem; color: #666666; margin-bottom: 1rem;">Click ↑ to move up, ↓ to move down. #1 = most important to you.</p>
+                    <div id="ranking-list">
+                        <div class="ranking-item" data-value="impact">
+                            <div class="ranking-number">1</div>
+                            <div class="ranking-text">Building food compliance tech for India's food industry</div>
+                            <div class="ranking-buttons">
+                                <button type="button" class="rank-btn" onclick="moveRankingUp(event)">↑</button>
+                                <button type="button" class="rank-btn" onclick="moveRankingDown(event)">↓</button>
+                            </div>
+                        </div>
+                        <div class="ranking-item" data-value="leadership">
+                            <div class="ranking-number">2</div>
+                            <div class="ranking-text">Leadership + technical autonomy with founders</div>
+                            <div class="ranking-buttons">
+                                <button type="button" class="rank-btn" onclick="moveRankingUp(event)">↑</button>
+                                <button type="button" class="rank-btn" onclick="moveRankingDown(event)">↓</button>
+                            </div>
+                        </div>
+                        <div class="ranking-item" data-value="equity">
+                            <div class="ranking-number">3</div>
+                            <div class="ranking-text">Equity and long-term upside</div>
+                            <div class="ranking-buttons">
+                                <button type="button" class="rank-btn" onclick="moveRankingUp(event)">↑</button>
+                                <button type="button" class="rank-btn" onclick="moveRankingDown(event)">↓</button>
+                            </div>
+                        </div>
+                        <div class="ranking-item" data-value="architecture">
+                            <div class="ranking-number">4</div>
+                            <div class="ranking-text">Building cutting-edge system architecture</div>
+                            <div class="ranking-buttons">
+                                <button type="button" class="rank-btn" onclick="moveRankingUp(event)">↑</button>
+                                <button type="button" class="rank-btn" onclick="moveRankingDown(event)">↓</button>
+                            </div>
+                        </div>
+                        <div class="ranking-item" data-value="mentoring">
+                            <div class="ranking-number">5</div>
+                            <div class="ranking-text">Mentoring the next generation of engineers</div>
+                            <div class="ranking-buttons">
+                                <button type="button" class="rank-btn" onclick="moveRankingUp(event)">↑</button>
+                                <button type="button" class="rank-btn" onclick="moveRankingDown(event)">↓</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Early-stage startup experience *</label>
+                    <div class="choice">
+                        <input type="radio" name="startupExp" value="yes-core" required>
+                        <label style="display: inline; margin: 0;">Yes — core team member</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="startupExp" value="yes-later">
+                        <label style="display: inline; margin: 0;">Yes — joined later</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="startupExp" value="no-interested">
+                        <label style="display: inline; margin: 0;">No — but interested</label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="startupExp" value="no">
+                        <label style="display: inline; margin: 0;">No — prefer stability</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 11: Why Fitshield -->
+            <div class="page" data-page="11">
+                <h2 class="page-title">Why Fitshield?</h2>
+                <div class="form-group">
+                    <label for="whyFitshield">Why does this role excite you? *</label>
+                    <textarea id="whyFitshield" name="whyFitshield" placeholder="What drew you to Fitshield?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ctoVision">What's your vision for this role? *</label>
+                    <textarea id="ctoVision" name="ctoVision" placeholder="How would you approach it?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="additionalInfo">Anything else we should know?</label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="Optional..."></textarea>
+                </div>
+            </div>
+
+            <!-- Page 12: Success -->
+            <div class="page" data-page="12">
+                <div class="success-message">
+                    <div class="success-icon">✓</div>
+                    <h2>Thank You!</h2>
+                    <p>Your responses have been successfully received.</p>
+                    <p>Our team will review your application carefully. If your profile aligns with what we're looking for, we'll reach out to schedule a 1:1 conversation with the founders.</p>
+                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999999;">This process typically takes 5-7 business days.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 2rem; border-top: 1px solid #dddddd; background: #ffffff;">
+            <div class="navigation">
+                <button type="button" class="nav-btn" id="prevBtn" onclick="previousPage()">← Previous</button>
+                <button type="button" class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+            </div>
+            <div class="page-indicator">
+                <span id="pageIndicator">1 / 12</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 12;
+        const DEPLOYMENT_URL = 'https://script.google.com/macros/s/AKfycbxQTGZvAj_4f8xKXrEzVTeOWXKVs5UdpAD_OuoN1XelBIUWkYHkCIVDdWJ7Bvljcxiz/exec';
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+            currentPage = page;
+            updateProgress();
+            updateNavigation();
+            updateRankingButtons();
+        }
+
+        function updateProgress() {
+            const percent = ((currentPage - 1) / (totalPages - 1)) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('pageIndicator').textContent = currentPage + ' / ' + totalPages;
+        }
+
+        function updateNavigation() {
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('prevBtn').style.visibility = currentPage === 1 ? 'hidden' : 'visible';
+            
+            if (currentPage === totalPages) {
+                document.getElementById('nextBtn').textContent = 'Submit →';
+                document.getElementById('nextBtn').onclick = submitForm;
+            } else {
+                document.getElementById('nextBtn').textContent = 'Next →';
+                document.getElementById('nextBtn').onclick = nextPage;
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+
+        function nextPage() {
+            if (validateCurrentPage()) {
+                goToPage(currentPage + 1);
+            }
+        }
+
+        function previousPage() {
+            goToPage(currentPage - 1);
+        }
+
+        function validateCurrentPage() {
+            const page = currentPage;
+            let isValid = true;
+
+            if (page === 1) {
+                if (!document.getElementById('acceptance').checked) {
+                    alert('Please accept the terms');
+                    return false;
+                }
+            } else if (page === 2) {
+                const fields = ['firstName', 'lastName', 'phone', 'email', 'portfolio'];
+                for (let id of fields) {
+                    const el = document.getElementById(id);
+                    if (!el || !el.value.trim()) {
+                        alert('Please fill all required fields');
+                        return false;
+                    }
+                }
+            } else if (page === 3) {
+                if (!document.getElementById('resumeFile').files || document.getElementById('resumeFile').files.length === 0) {
+                    alert('Please upload your resume');
+                    return false;
+                }
+            } else if (page === 4) {
+                const yp = parseInt(document.getElementById('yearsProduction').value);
+                const yl = parseInt(document.getElementById('yearsLeadership').value);
+                if (!yp || yp < 6) {
+                    alert('Minimum 6 years of production experience required');
+                    return false;
+                }
+                if (!yl || yl < 3) {
+                    alert('Minimum 3 years of leadership experience required');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function submitForm() {
+            if (validateCurrentPage()) {
+                collectAndSubmitData();
+            }
+        }
+
+        function collectAndSubmitData() {
+            const techStack = Array.from(document.querySelectorAll('input[name="techStack"]:checked')).map(el => el.value).join(', ');
+            const rankings = Array.from(document.querySelectorAll('#ranking-list .ranking-item')).map(item => item.querySelector('.ranking-text').textContent).join(' | ');
+
+            const data = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                portfolio: document.getElementById('portfolio').value,
+                linkedin: document.getElementById('linkedin').value,
+                yearsProduction: document.getElementById('yearsProduction').value,
+                yearsLeadership: document.getElementById('yearsLeadership').value,
+                pythonRating: document.getElementById('pythonRating').value,
+                reactRating: document.getElementById('reactRating').value,
+                scaleExperience: document.querySelector('input[name="scaleExperience"]:checked').value,
+                techStack: techStack,
+                leadershipStyle: document.querySelector('input[name="leadershipStyle"]:checked').value,
+                mentoringApproach: document.getElementById('mentoringApproach').value,
+                systemDescription: document.getElementById('systemDescription').value,
+                systemOptimization: document.getElementById('systemOptimization').value,
+                migrationExp: document.querySelector('input[name="migrationExp"]:checked').value,
+                migrationStrategy: document.getElementById('migrationStrategy').value,
+                hiringApproach: document.getElementById('hiringApproach').value,
+                conflictHandling: document.getElementById('conflictHandling').value,
+                technicalStandards: document.getElementById('technicalStandards').value,
+                startupExp: document.querySelector('input[name="startupExp"]:checked').value,
+                whyFitshield: document.getElementById('whyFitshield').value,
+                ctoVision: document.getElementById('ctoVision').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                priorities: rankings,
+                resumeFileName: document.getElementById('resumeFile').files[0] ? document.getElementById('resumeFile').files[0].name : 'No file'
+            };
+
+            fetch(DEPLOYMENT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Submission successful:', response);
+                goToPage(12);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting your form. Please try again.');
+            });
+        }
+
+        function handleResumeUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('File size must be less than 5MB');
+                event.target.value = '';
+                return;
+            }
+            document.getElementById('resumeFileName').innerHTML = `✓ ${file.name}`;
+            document.getElementById('resumeFileName').style.display = 'block';
+        }
+
+        function moveRankingUp(e) {
+            e.preventDefault();
+            const item = e.target.closest('.ranking-item');
+            const prev = item.previousElementSibling;
+            if (prev && prev.classList.contains('ranking-item')) {
+                item.parentNode.insertBefore(item, prev);
+                updateRankingButtons();
+            }
+        }
+
+        function moveRankingDown(e) {
+            e.preventDefault();
+            const item = e.target.closest('.ranking-item');
+            const next = item.nextElementSibling;
+            if (next && next.classList.contains('ranking-item')) {
+                item.parentNode.insertBefore(next, item);
+                updateRankingButtons();
+            }
+        }
+
+        function updateRankingButtons() {
+            const items = document.querySelectorAll('#ranking-list .ranking-item');
+            items.forEach((item, index) => {
+                const numberEl = item.querySelector('.ranking-number');
+                if (numberEl) numberEl.textContent = index + 1;
+                const buttons = item.querySelectorAll('.rank-btn');
+                if (buttons[0]) buttons[0].disabled = index === 0;
+                if (buttons[1]) buttons[1].disabled = index === items.length - 1;
+            });
+        }
+
+        goToPage(1);
+    </script>
+</body>
+</html>
